@@ -1,18 +1,16 @@
-const { Sequelize } = require("sequelize/types");
-
-module.exports = function(sequelize) {
+module.exports = function(sequelize, DataTypes) {
 
     const Transaction = sequelize.define('transactions', {
         senderId : {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
         receiverId : {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
         amount : {
-            type: Sequelize.INTEGER,
+            type: DataTypes.INTEGER,
             allowNull: false,
             validate: {
                 min: 1

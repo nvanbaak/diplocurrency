@@ -1,28 +1,26 @@
-const { Sequelize } = require("sequelize/types");
-
-module.exports = function(sequelize) {
+module.exports = function(sequelize, DataTypes) {
 
     const Account = sequelize.define('account', {
         name : {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             unique: true,
             allowNull: false
         },
-        id : {
-            type: Sequelize.STRING,
+        accountId : {
+            type: DataTypes.STRING,
             unique: true,
             allowNull: false
         },
         balance : {
-            type: Sequelize.INTEGER,
+            type: DataTypes.INTEGER,
             defaultValue: 0
         },
         isBanned: { 
-            type: Sequelize.BOOLEAN,
+            type: DataTypes.BOOLEAN,
             defaultValue: false
         },
         isBank: { 
-            type: Sequelize.BOOLEAN,
+            type: DataTypes.BOOLEAN,
             defaultValue: false
         }
     });

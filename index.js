@@ -33,7 +33,7 @@ const dbFiles = fs.readdirSync('./models').filter(f => f.endsWith(".js"));
 
 for (const file of dbFiles) {
     const modelBuilder = require(`./models/${file}`);
-    db.push(modelBuilder(sequelize));
+    db.push(modelBuilder(sequelize, Sequelize.DataTypes));
 }
 
 // // read account data from file; placeholder until I get the database working
@@ -51,6 +51,7 @@ client.once('ready', ()=> {
     for (const model of db) {
         model.sync({force : true}); // force=true resets the database every time the bot starts
     }
+    console.log('Database synced.');
 });
 
 // 
