@@ -1,18 +1,17 @@
 // this code taken, with modifications, from https://discordjs.guide/creating-your-bot/creating-commands.html#command-deployment-script
 
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const fs = require('fs');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { clientId, guildId, token } = require('./config.json');
 
-const commands = [
-	new SlashCommandBuilder().setName('hello').setDescription('Hi there!'),
-	new SlashCommandBuilder().setName('server').setDescription('Replies with server info.'),
-	new SlashCommandBuilder().setName('user').setDescription('Replies with user info.'),
-    new SlashCommandBuilder().setName('transfer').setDescription('Transfers payment between users.'),
-    new SlashCommandBuilder().setName('balance').setDescription('Displays account balance.')
-]
-	.map(command => command.toJSON());
+const commands = []
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    command.push(command.data.toJSON());
+}
 
 const rest = new REST({ version: '9' }).setToken(token);
 
