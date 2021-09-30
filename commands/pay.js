@@ -14,12 +14,12 @@ module.exports = {
             .setDescription('the amount to pay')
             .setRequired(true))
         .addStringOption(option => 
-            option.setName('deal')
-            .setDescription("the reason you're making the transaction")
+            option.setName('reason-for-transaction')
+            .setDescription("why you're paying; used by banker to determine deal violations")
             .setRequired(true)),
     async execute(interaction, auth) {
 
-        console.log(auth.thisUser); 
+        console.log(auth); 
 
         // const userCountry = interaction.member._roles[1]
 
