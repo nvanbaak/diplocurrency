@@ -1,8 +1,8 @@
 const fs = require('fs');
 const { Client, Intents, Collection } = require('discord.js');
-const { token } = require('./config.json');
+const { token, adminId, bankId } = require('./config.json');
 
-const refreshCommands = require('./deploy-commands.js')
+const refreshCommands = require('./deploy-commands.js');
 refreshCommands();
 
 const client = new Client( {intents: [Intents.FLAGS.GUILDS]} );
@@ -31,9 +31,24 @@ client.on('interactionCreate', async interaction => {
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
 
+    // get user information for auth purposes
+
+    console.log(interaction.user.id)
+    console.log(adminId)
+
+    const isAdmin = ( interaction.user.id == adminId );
+    const isBank = ( interaction.member._roles.includes(bankId));
+    const userCountry = interaction.member._roles[1]; // first role is Player, second is country
+
+    const auth = {
+        isAdmin : isAdmin,
+        isBank : isBank
+    };
+
+    console.log(auth);
 
     try {
-        await command.execute(interaction);
+        await command.execute(interaction, auth);
     } catch (error) {
         console.error(error);
         await interaction.reply( {content: "command failed", ephemeral: true});

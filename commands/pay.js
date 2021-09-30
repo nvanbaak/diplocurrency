@@ -17,13 +17,17 @@ module.exports = {
             option.setName('deal')
             .setDescription("the reason you're making the transaction")
             .setRequired(true)),
-    async execute(interaction) {
+    async execute(interaction, auth) {
 
-        console.log(interaction);
-        console.log("---------------------------------------------------");
-        console.log(interaction.options);
-        console.log("---------------------------------------------------");
-        console.log(interaction.options._hoistedOptions[0].role);
+        console.log(auth.thisUser); 
+
+        // const userCountry = interaction.member._roles[1]
+
+        // console.log(interaction.member);
+        // console.log("---------------------------------------------------");
+        // console.log(interaction.options);
+        // console.log("---------------------------------------------------");
+        // console.log(interaction.options._hoistedOptions[0].role);
         interaction.reply("Printed to console!");
 
     }
