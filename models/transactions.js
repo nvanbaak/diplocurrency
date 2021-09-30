@@ -3,25 +3,20 @@ const { Sequelize } = require("sequelize/types");
 module.exports = function(sequelize) {
 
     const Transaction = sequelize.define('transactions', {
-        Payer : {
-            type: Sequelize.Accounts,
-        },
-        id : {
+        senderId : {
             type: Sequelize.STRING,
-            unique: true,
             allowNull: false
         },
-        balance : {
+        receiverId : {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        amount : {
             type: Sequelize.INTEGER,
-            defaultValue: 0,
-        },
-        isBanned: { 
-            type: Sequelize.BOOLEAN,
-            defaultValue: false,
-        },
-        isBank: { 
-            type: Sequelize.BOOLEAN,
-            defaultValue: false,
+            allowNull: false,
+            validate: {
+                min: 1
+            }
         }
     })
 
