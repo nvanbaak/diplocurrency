@@ -7,8 +7,7 @@ module.exports = {
         .addRoleOption(option => 
             option.setName('country')
                 .setDescription('the country you want to pay')
-                .setRequired(true)
-                )
+                .setRequired(true))
         .addIntegerOption(option =>
             option.setName('amount')
             .setDescription('the amount to pay')
@@ -17,7 +16,7 @@ module.exports = {
             option.setName('reason-for-transaction')
             .setDescription("why you're paying; used by banker to determine deal violations")
             .setRequired(true)),
-    async execute(interaction, auth) {
+    async execute(interaction, auth, accountInfo) {
 
         console.log(auth); 
 

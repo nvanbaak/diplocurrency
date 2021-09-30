@@ -18,8 +18,14 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
-// setup client
+// read account data from file
+let accountInfo;
+fs.readFile('accounts.json', function(err, data) {
+    accountInfo = JSON.parse(data);
+    console.log("Loaded account information.");
+});
 
+// setup client
 client.once('ready', ()=> {
     console.log('Client is ready.');
 });
@@ -32,23 +38,20 @@ client.on('interactionCreate', async interaction => {
     if (!command) return;
 
     // get user information for auth purposes
-
-    console.log(interaction.user.id)
-    console.log(adminId)
-
     const isAdmin = ( interaction.user.id == adminId );
     const isBank = ( interaction.member._roles.includes(bankId));
-    const userCountry = interaction.member._roles[1]; // first role is Player, second is country
+    const userAccount = accountInfo[interaction.member._roles[1]]; // role 0 is player, role 1 is country
 
     const auth = {
         isAdmin : isAdmin,
-        isBank : isBank
+        isBank : isBank,
+        userAccount : userAccount
     };
 
     console.log(auth);
 
     try {
-        await command.execute(interaction, auth);
+        await command.execute(interaction, auth, accountInfo);
     } catch (error) {
         console.error(error);
         await interaction.reply( {content: "command failed", ephemeral: true});
