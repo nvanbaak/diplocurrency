@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { Client, Intents, Collection } = require('discord.js');
 const { token, adminId, bankId } = require('./config.json');
+const Sequelize = require('sequelize');
 
 const refreshCommands = require('./deploy-commands.js');
 refreshCommands();
@@ -8,7 +9,7 @@ refreshCommands();
 const client = new Client( {intents: [Intents.FLAGS.GUILDS]} );
 
 // grabs all commands from ./commands and makes it available to the bot.
-// adapted from https://discord.js/creating-your-bot/command-handling.html
+// code from https://discord.js/creating-your-bot/command-handling.html
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(f => f.endsWith(".js"));
@@ -18,18 +19,42 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
-// read account data from file
-let accountInfo;
-fs.readFile('accounts.json', function(err, data) {
-    accountInfo = JSON.parse(data);
-    console.log("Loaded account information.");
+// database setup
+const sequelize = new Sequelize('database', 'user', 'password', {
+    host : 'localhost',
+    dialect : 'sqlite',
+    logging : false,
+    storage : 'database.sqlite'
 });
+
+// load db models; we'll sync them once the bot's ready
+const db = [];
+const dbFiles = fs.readdirSync('./models').filter(f => f.endsWith(".js"));
+
+for (const file of dbFiles) {
+    const modelBuilder = require(`./models/${file}`);
+    db.push(modelBuilder(sequelize, Sequelize.DataTypes));
+}
+
+// // read account data from file; placeholder until I get the database working
+// let accountInfo;
+// fs.readFile('accounts.json', function(err, data) {
+//     accountInfo = JSON.parse(data);
+//     console.log("Loaded account information.");
+// });
 
 // setup client
 client.once('ready', ()=> {
     console.log('Client is ready.');
+
+    // sync database
+    for (const model of db) {
+        model.sync({force : true}); // force=true resets the database every time the bot starts
+    }
+    console.log('Database synced.');
 });
 
+// 
 client.on('interactionCreate', async interaction => {
     if(!interaction.isCommand()) return;
 
