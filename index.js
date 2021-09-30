@@ -2,6 +2,9 @@ const fs = require('fs');
 const { Client, Intents, Collection } = require('discord.js');
 const { token } = require('./config.json');
 
+const refreshCommands = require('./deploy-commands.js')
+refreshCommands();
+
 const client = new Client( {intents: [Intents.FLAGS.GUILDS]} );
 
 // grabs all commands from ./commands and makes it available to the bot.
@@ -27,6 +30,7 @@ client.on('interactionCreate', async interaction => {
     // get command and return if it's not in the list
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
+
 
     try {
         await command.execute(interaction);
