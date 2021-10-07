@@ -28,33 +28,22 @@ const sequelize = new Sequelize('database', 'user', 'password', {
 });
 
 // load db models; we'll sync them once the bot's ready
-const db = [];
-const dbFiles = fs.readdirSync('./models').filter(f => f.endsWith(".js"));
-
-for (const file of dbFiles) {
-    const modelBuilder = require(`./models/${file}`);
-    db.push(modelBuilder(sequelize, Sequelize.DataTypes));
-}
-
-// // read account data from file; placeholder until I get the database working
-// let accountInfo;
-// fs.readFile('accounts.json', function(err, data) {
-//     accountInfo = JSON.parse(data);
-//     console.log("Loaded account information.");
-// });
+const makeDb = require("./models/index.js");
+const db = makeDb(sequelize, Sequelize.DataTypes);
+console.log(db)
 
 // setup client
 client.once('ready', ()=> {
     console.log('Client is ready.');
 
     // sync database
-    for (const model of db) {
-        model.sync({force : true}); // force=true resets the database every time the bot starts
-    }
+    // for (const model of db) {
+    //     model.sequelize.sync({force : true}); // force=true resets the database every time the bot starts
+    // }
     console.log('Database synced.');
 });
 
-// 
+// bot responses
 client.on('interactionCreate', async interaction => {
     if(!interaction.isCommand()) return;
 
@@ -76,7 +65,7 @@ client.on('interactionCreate', async interaction => {
     console.log(auth);
 
     try {
-        await command.execute(interaction, auth, accountInfo);
+        await command.execute(interaction, auth, sequelize);
     } catch (error) {
         console.error(error);
         await interaction.reply( {content: "command failed", ephemeral: true});
