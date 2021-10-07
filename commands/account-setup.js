@@ -22,34 +22,26 @@ module.exports = {
     async execute(interaction, auth, db) {
 
         if (!auth.isAdmin) {
-            await interaction.reply("You're not authorized to set up bank accounts.")
+            return await interaction.reply("You're not authorized to set up bank accounts.")
         } else {
 
             const countryRoles = interaction.options._hoistedOptions;
-            const bankAccounts = {};
 
             for (country of countryRoles) {
-                const bankProfile = {
-                    name : country.role.name,
-                    id : country.role.id,
-                    isBank : false,
-                    banned : false,
-                    balance : 2
+                try {
+                    const account = await db.Accounts.create({
+                        name : country.role.name,
+                        accountId : country.role.id,
+                        isBank : false,
+                        isBanned : false,
+                        balance : 2
+                    });
+                } catch (err) {
+                    return interaction.reply('Error creating account');
                 }
-                bankAccounts[bankProfile.id] = bankProfile;
             }
 
-            const output = JSON.stringify(bankAccounts);
-
-            fs.writeFileSync("accounts.json", output, 'utf8', function (err) {
-                if (err) {
-                    console.log("Write to file failed.");
-                    console.log(err);
-                    return;
-                }
-            })
-
-            await interaction.reply("Linked accounts to roles.  Restart the bot for changes to take effect.");
+            await interaction.reply("Linked accounts to roles.");
         }
 
     }

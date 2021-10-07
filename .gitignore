@@ -106,3 +106,4 @@ dist
 config.json
 accounts.json
 database.sqlite
+.vscode

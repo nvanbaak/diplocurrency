@@ -7,8 +7,8 @@ module.exports = function(sequelize, DataTypes) {
     const transaction = transactionBuilder(sequelize, DataTypes);
 
     const db = {
-        account : account,
-        transaction : transaction
+        Accounts : account,
+        Transactions : transaction
     }
 
     return db;

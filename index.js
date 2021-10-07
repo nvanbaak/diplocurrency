@@ -37,8 +37,8 @@ client.once('ready', ()=> {
 
     // sync database
     const syncSettings = {force : true} // resets database each time the bot starts; 'false' makes it persistant
-    db.account.sequelize.sync( syncSettings );
-    db.transaction.sequelize.sync( syncSettings );
+    db.Accounts.sequelize.sync( syncSettings );
+    db.Transactions.sequelize.sync( syncSettings );
 
     console.log('Database synced.');
 });
@@ -54,7 +54,7 @@ client.on('interactionCreate', async interaction => {
     // get user information for auth purposes
     const isAdmin = ( interaction.user.id == adminId );
     const isBank = ( interaction.member._roles.includes(bankId));
-    const userAccount = accountInfo[interaction.member._roles[1]]; // role 0 is player, role 1 is country
+    const userAccount = interaction.member._roles[1]; // role 0 is player, role 1 is country
 
     const auth = {
         isAdmin : isAdmin,
