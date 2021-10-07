@@ -20,12 +20,9 @@ module.exports = {
     async execute(interaction, auth, { Accounts, Transactions }) {
 
         // extract options from command
-        const targetId = interaction.options
-                ._hoistedOptions[0].value;
-        const transferAmount = interaction.options
-                ._hoistedOptions[1].value;
-        const reason = interaction.options
-                ._hoistedOptions[2].value;
+        const targetId = interaction.options.getRole("country").id;
+        const transferAmount = interaction.options.getInteger("amount");
+        const reason = interaction.options.getString("reason-for-transaction");
 
         // get account information for both countries
         const userAccount = await Accounts.findOne( { where: {accountId: auth.userAccount}});
@@ -79,9 +76,6 @@ module.exports = {
         if (accountUpdate) {
             await interaction.reply(`${targetAccount.name} has been paid ${transferAmount} VC.`)
         }
-
-
-        console.log(userAccount);
 
         interaction.reply("Printed to console!");
     }
