@@ -30,16 +30,16 @@ const sequelize = new Sequelize('database', 'user', 'password', {
 // load db models; we'll sync them once the bot's ready
 const makeDb = require("./models/index.js");
 const db = makeDb(sequelize, Sequelize.DataTypes);
-console.log(db)
 
 // setup client
 client.once('ready', ()=> {
     console.log('Client is ready.');
 
     // sync database
-    // for (const model of db) {
-    //     model.sequelize.sync({force : true}); // force=true resets the database every time the bot starts
-    // }
+    const syncSettings = {force : true} // resets database each time the bot starts; 'false' makes it persistant
+    db.account.sequelize.sync( syncSettings );
+    db.transaction.sequelize.sync( syncSettings );
+
     console.log('Database synced.');
 });
 
@@ -62,10 +62,8 @@ client.on('interactionCreate', async interaction => {
         userAccount : userAccount
     };
 
-    console.log(auth);
-
     try {
-        await command.execute(interaction, auth, sequelize);
+        await command.execute(interaction, auth, db);
     } catch (error) {
         console.error(error);
         await interaction.reply( {content: "command failed", ephemeral: true});
