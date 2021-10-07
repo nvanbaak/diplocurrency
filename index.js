@@ -36,7 +36,7 @@ client.once('ready', ()=> {
     console.log('Client is ready.');
 
     // sync database
-    const syncSettings = {force : true} // resets database each time the bot starts; 'false' makes it persistant
+    const syncSettings = {force : false} // 'true' resets database each time the bot starts; 'false' makes it persistant
     db.Accounts.sequelize.sync( syncSettings );
     db.Transactions.sequelize.sync( syncSettings );
 

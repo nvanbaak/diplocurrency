@@ -2,13 +2,12 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('get-account')
+        .setName('view-account')
         .setDescription('gets account information')
         .addRoleOption(option => 
             option.setName('country')
-                .setDescription('the country you want to pay')
-                .setRequired(true))
-,
+                .setDescription('the country whose information you want to view')
+                .setRequired(true)),
     async execute(interaction, auth, { Accounts }) {
 
         const targetAccountId = interaction.options._hoistedOptions[0].value;
@@ -20,11 +19,14 @@ module.exports = {
             }
         }
 
-        const { dataValues } = await Accounts.findOne( { where: { accountId: targetAccountId} } )
+        const {name, isBanned, balance} = await Accounts.findOne( { where: { accountId: targetAccountId} } )
 
-        console.log(dataValues)
+        if (isBanned) {
+            return interaction.reply("Your account has been terminated by the Bank for breach of contract.  Have a nice day!");
+        } else {
+            interaction.reply(`Account information for **${name}**:\n\nYour account is in good standing.  Your balance is: **${balance}**`);
+        }
 
-        interaction.reply(`Account information for **${dataValues.name}**:\n\nYour balance is **${dataValues.balance}**`);
 
     }
 }

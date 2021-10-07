@@ -15,6 +15,10 @@ module.exports = function(sequelize, DataTypes) {
             validate: {
                 min: 1
             }
+        },
+        reason : {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     })
 
