@@ -4,10 +4,10 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('my-account')
         .setDescription('retrieves your account information'),
-    async execute(interaction, auth, { Accounts }) {
+    async execute(interaction, { userAccount }, { Accounts }) {
 
         // Retrieve info from database
-        const accountInfo = await Accounts.findOne( { where: { accountId: auth.userAccount } } )
+        const accountInfo = await Accounts.findOne( { where: { accountId: userAccount } } )
         if (!accountInfo) {
             return interaction.reply("There is no account information associated with your roles.");
         }
@@ -19,7 +19,5 @@ module.exports = {
         } else {
             interaction.reply(`Account information for **${name}**:\n\nYour account is in good standing.  Your balance is: **${balance}**`);
         }
-
-
     }
 }

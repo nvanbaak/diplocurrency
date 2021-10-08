@@ -22,6 +22,10 @@ module.exports = function(sequelize, DataTypes) {
         isBank: { 
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        outputChannel: {
+            type: DataTypes.STRING,
+            defaultValue: null
         }
     });
 
