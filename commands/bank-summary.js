@@ -11,7 +11,22 @@ module.exports = {
             return await interaction.reply("You're not authorized to view that account.")
         }
 
-        const {name, isBanned, balance} = await Accounts.findOne( { where: { accountId: targetAccountId} } )
+        const allAccounts = await Accounts.findAll();
+
+        let outputStr = "Account summary:\n"
+
+        for (const account of allAccounts) {
+
+            if (account.isBanned) {
+                outputStr += `\n• **${account.name}**: banned`;
+            } else if (account.isBank) {
+                outputStr += `\n• **${account.name}** (The Bank): **∞**`;
+            } else {
+                outputStr += `\n• **${account.name}**: ${account.balance}`;
+            }
+        }
+
+        return interaction.reply(outputStr);
 
     }
 }

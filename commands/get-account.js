@@ -2,25 +2,18 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('view-account')
-        .setDescription('gets account information')
-        .addRoleOption(option => 
-            option.setName('country')
-                .setDescription('the country whose information you want to view')
-                .setRequired(true)),
+        .setName('my-account')
+        .setDescription('retrieves your account information'),
     async execute(interaction, auth, { Accounts }) {
 
-        const targetAccountId = interaction.options._hoistedOptions[0].value;
-
-        // Make sure the user is authorized to view this account
-        if (!auth.isAdmin && !auth.isBank) {
-            if (targetAccount != auth.userAccount) {
-                return await interaction.reply("You're not authorized to view that account.")
-            }
+        // Retrieve info from database
+        const accountInfo = await Accounts.findOne( { where: { accountId: auth.userAccount } } )
+        if (!accountInfo) {
+            return interaction.reply("There is no account information associated with your roles.");
         }
+        const {name, isBanned, balance} = accountInfo;
 
-        const {name, isBanned, balance} = await Accounts.findOne( { where: { accountId: targetAccountId} } )
-
+        // Return information to user
         if (isBanned) {
             return interaction.reply("Your account has been terminated by the Bank for breach of contract.  Have a nice day!");
         } else {
