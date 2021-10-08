@@ -10,7 +10,7 @@ module.exports = {
             option.setName('country')
                 .setDescription('ADMIN ONLY: which country to set output')
                 .setRequired(false)),
-    async execute(interaction, {isAdmin, userAccount}, {Accounts}) {
+    async execute( {interaction, auth:{isAdmin, userAccount}, db:{Accounts}}) {
         // When admin uses the command, it sets the output of the designated country
         if (isAdmin) {
             const countryId = interaction.options.getRole("country").id;
@@ -29,8 +29,8 @@ module.exports = {
         
         // if not an admin, it just changes the user's country
         else {
-            const accountInfo = await Accounts.update( { where: { accountId: userAccount } } )
-            if (!accountInfo) {
+            const accountUpdate = await Accounts.update( { where: { accountId: userAccount } } )
+            if (!accountUpdate) {
                 return interaction.reply("There is no account information associated with your roles.");
             }
 

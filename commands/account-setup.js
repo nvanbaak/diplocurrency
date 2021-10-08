@@ -19,7 +19,7 @@ module.exports = {
             option.setName("russia").setDescription("russia").setRequired(true))
         .addRoleOption(option => 
             option.setName("turkey").setDescription("turkey").setRequired(true)),
-    async execute(interaction, auth, db) {
+    async execute( { interaction, auth, db } ) {
 
         if (!auth.isAdmin) {
             return await interaction.reply("You're not authorized to set up bank accounts.")

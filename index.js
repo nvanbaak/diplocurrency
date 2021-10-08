@@ -90,8 +90,14 @@ client.on('interactionCreate', async interaction => {
         userAccount : userAccount
     };
 
+    const commandInfo = {
+        interaction: interaction,
+        auth: auth,
+        db: db
+    }
+
     try {
-        await command.execute(interaction, auth, db);
+        await command.execute(commandInfo);
     } catch (error) {
         console.error(error);
         await interaction.reply( {content: "command failed", ephemeral: true});

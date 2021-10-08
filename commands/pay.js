@@ -17,7 +17,7 @@ module.exports = {
             option.setName('reason-for-transaction')
             .setDescription("why you're paying; used by banker to determine deal violations")
             .setRequired(true)),
-    async execute(interaction, auth, { Accounts, Transactions }) {
+    async execute( { interaction, auth, db: { Accounts, Transactions } } ) {
 
         // extract options from command
         const targetId = interaction.options.getRole("country").id;

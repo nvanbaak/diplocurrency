@@ -9,7 +9,7 @@ module.exports = {
             option.setName('country')
                 .setDescription('the country to ban')
                 .setRequired(true)),
-    async execute(interaction, auth, { Accounts }) {
+    async execute( { interaction, auth, db: { Accounts } }) {
 
         // reprimand non-admin users for their hubris
         if (!auth.isAdmin && !auth.isBank) {
