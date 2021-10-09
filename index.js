@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { Client, Intents, Collection } = require('discord.js');
-const { token, adminId, bankId } = require('./config.json');
+const { token, adminId, bankId, ledgerId } = require('./config.json');
 const Sequelize = require('sequelize');
 
 
@@ -93,8 +93,11 @@ client.on('interactionCreate', async interaction => {
     const commandInfo = {
         interaction: interaction,
         auth: auth,
-        db: db
+        db: db,
+        ledgerId: ledgerId 
     }
+
+    console.log(commandInfo)
 
     try {
         await command.execute(commandInfo);

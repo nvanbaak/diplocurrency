@@ -9,7 +9,13 @@ module.exports = {
             option.setName('country')
                 .setDescription('the country to designate')
                 .setRequired(true)),
-    async execute( {interaction, auth, db:{ Accounts }}) {
+    async execute( commandInfo ) {
+
+        const {
+            interaction,
+            auth,
+            db:{ Accounts }
+        } = commandInfo;
 
         // reprimand non-admin users for their hubris
         if (!auth.isAdmin) {

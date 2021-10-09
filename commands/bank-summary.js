@@ -4,7 +4,13 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('bank-summary')
         .setDescription('BANKER ONLY: displays all account information'),
-    async execute( { interaction, auth, db: { Accounts } }) {
+    async execute( commandInfo ) {
+
+        const {
+            interaction,
+            auth,
+            db: { Accounts }
+        } = commandInfo;
 
         // Make sure the user is authorized
         if (!auth.isAdmin && !auth.isBank) {

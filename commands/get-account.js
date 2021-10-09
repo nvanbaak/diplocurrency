@@ -4,7 +4,13 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('my-account')
         .setDescription('retrieves your account information'),
-    async execute( { interaction, auth:{ userAccount }, db:{ Accounts } }) {
+    async execute( commandInfo ) {
+
+        const { 
+            interaction, 
+            auth:{ userAccount }, 
+            db:{ Accounts } 
+        } = commandInfo;
 
         // Retrieve info from database
         const accountInfo = await Accounts.findOne( { where: { accountId: userAccount } } )

@@ -10,7 +10,14 @@ module.exports = {
             option.setName('country')
                 .setDescription('ADMIN ONLY: which country to set output')
                 .setRequired(false)),
-    async execute( {interaction, auth:{isAdmin, userAccount}, db:{Accounts}}) {
+    async execute( commandInfo ) {
+
+        const {
+            interaction,
+            auth:{isAdmin, userAccount},
+            db:{Accounts}
+        } = commandInfo;
+        
         // When admin uses the command, it sets the output of the designated country
         if (isAdmin) {
             const countryId = interaction.options.getRole("country").id;

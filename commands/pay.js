@@ -17,7 +17,14 @@ module.exports = {
             option.setName('reason-for-transaction')
             .setDescription("why you're paying; used by banker to determine deal violations")
             .setRequired(true)),
-    async execute( { interaction, auth, db: { Accounts, Transactions } } ) {
+    async execute( commandInfo ) {
+
+        const {
+            interaction,
+            auth,
+            db: { Accounts, Transactions },
+            ledgerId
+        } = commandInfo;
 
         // extract options from command
         const targetId = interaction.options.getRole("country").id;
@@ -71,12 +78,29 @@ module.exports = {
         // Update target account information
         const newTargetBalance = targetAccount.balance + transferAmount;
         const accountUpdate = await Accounts.update( {balance: newTargetBalance}, {where: {accountId: targetAccount.accountId}});
-        
-        // Tell user the update succeeded
-        if (accountUpdate) {
-            await interaction.reply(`${targetAccount.name} has been paid ${transferAmount} VC.`)
+
+        // Send confirmation message to recipient
+        const myGuild = interaction.guild;
+
+        const receiverChannel = await myGuild.channels.cache.fetch(targetAccount.outputChannel)
+
+        if (receiverChannel) {
+            await receiverChannel.send(`Good day!  You have received **${transferAmount} VC** from **${userAccount.name}** for reason "${reason}".\n\n*The details of this transaction have been automatically entered into the Bank of Vora ledger.  As of this message, you are considered bound to these terms by the Bank of Vora.  Failure to comply with these terms will result in ejection from the Voracoin market.  If you believe this transaction was in error or wish to challenge the terms of the deal, you can make an appeal to the Bank of Vora via their diplomatic channels.` )
         }
 
-        interaction.reply("Printed to console!");
+        // Record transaction in ledger
+        const ledgerChannel = myGuild.channels.cache.fetch(ledgerId);
+
+        if (ledgerChannel) {
+            await ledgerChannel.send(`**Transaction**\n${userAccount.name} paid ${transferAmount} to ${targetAccount.name}.\nNew balance for ${userAccount.name}: ${userAccount.balance}VC\nNew balance for ${targetAccount.name}: ${targetAccount.balance}VC`)
+        }
+
+        // Tell user the update succeeded
+        if (accountUpdate) {
+            return await interaction.reply(`${targetAccount.name} has been paid ${transferAmount} VC.`)
+        } else {
+            return await interaction.reply("Something went wrong with payment.  Please ping your administrator.")
+        }
+
     }
 }
