@@ -82,25 +82,33 @@ module.exports = {
         // Send confirmation message to recipient
         const myGuild = interaction.guild;
 
-        const receiverChannel = await myGuild.channels.cache.fetch(targetAccount.outputChannel)
+        if (targetAccount.outputChannel) { // skip if no output channel
+    
+            const receiverChannel = await myGuild.channels.fetch(targetAccount.outputChannel);
 
-        if (receiverChannel) {
-            await receiverChannel.send(`Good day!  You have received **${transferAmount} VC** from **${userAccount.name}** for reason "${reason}".\n\n*The details of this transaction have been automatically entered into the Bank of Vora ledger.  As of this message, you are considered bound to these terms by the Bank of Vora.  Failure to comply with these terms will result in ejection from the Voracoin market.  If you believe this transaction was in error or wish to challenge the terms of the deal, you can make an appeal to the Bank of Vora via their diplomatic channels.` )
+            // At one point, the send command only worked here if you printed the channel to console first.  I have no idea why.  It has since stopped failing this way for no apparent reason.
+            // console.log(receiverChannel)
+    
+            if (receiverChannel) {
+                await receiverChannel.send(`Good day!  You have received **${transferAmount} VC** from **${userAccount.name}** for reason "${reason}".\n\n*The details of this transaction have been automatically entered into the Bank of Vora ledger.  As of this message, you are considered bound to these terms by the Bank of Vora.  Failure to comply with these terms will result in ejection from the Voracoin market.  If you believe this transaction was in error or wish to challenge the terms of the deal, you can make an appeal to the Bank of Vora via their diplomatic channels.*` );
+            }
         }
 
         // Record transaction in ledger
-        const ledgerChannel = myGuild.channels.cache.fetch(ledgerId);
+        const ledgerChannel = await myGuild.channels.fetch(ledgerId);
+
+        // At one point, the send command only worked here if you printed the channel to console first.  I have no idea why.  It has since stopped failing this way for no apparent reason.
+        // console.log(ledgerChannel)
 
         if (ledgerChannel) {
-            await ledgerChannel.send(`**Transaction**\n${userAccount.name} paid ${transferAmount} to ${targetAccount.name}.\nNew balance for ${userAccount.name}: ${userAccount.balance}VC\nNew balance for ${targetAccount.name}: ${targetAccount.balance}VC`)
+            await ledgerChannel.send(`\`\`\`AUTOMATIC TRANSACTION NOTIFICATION\n\n${userAccount.name} paid ${transferAmount} VC to ${targetAccount.name}.\nReason for payment: ${reason}\n\nNew balance for ${userAccount.name}: ${userAccount.balance} VC\nNew balance for ${targetAccount.name}: ${targetAccount.balance} VC\`\`\``)
         }
 
         // Tell user the update succeeded
         if (accountUpdate) {
-            return await interaction.reply(`${targetAccount.name} has been paid ${transferAmount} VC.`)
+            return await interaction.reply(`You have paid ${targetAccount.name} ${transferAmount} VC.`)
         } else {
             return await interaction.reply("Something went wrong with payment.  Please ping your administrator.")
         }
-
     }
 }

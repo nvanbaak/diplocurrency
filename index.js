@@ -97,8 +97,6 @@ client.on('interactionCreate', async interaction => {
         ledgerId: ledgerId 
     }
 
-    console.log(commandInfo)
-
     try {
         await command.execute(commandInfo);
     } catch (error) {
