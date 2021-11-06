@@ -101,12 +101,12 @@ module.exports = {
         // console.log(ledgerChannel)
 
         if (ledgerChannel) {
-            await ledgerChannel.send(`\`\`\`AUTOMATIC TRANSACTION NOTIFICATION\n\n${userAccount.name} paid ${transferAmount} VC to ${targetAccount.name}.\nReason for payment: ${reason}\n\nNew balance for ${userAccount.name}: ${userAccount.balance} VC\nNew balance for ${targetAccount.name}: ${targetAccount.balance} VC\`\`\``)
+            await ledgerChannel.send(`\`\`\`AUTOMATIC TRANSACTION NOTIFICATION\n\n${userAccount.name} paid ${transferAmount} VC to ${targetAccount.name}.\nReason for payment: ${reason}\n\nNew balance for ${userAccount.name}: ${newUserBalance} VC\nNew balance for ${targetAccount.name}: ${newTargetBalance} VC\`\`\``)
         }
 
         // Tell user the update succeeded
         if (accountUpdate) {
-            return await interaction.reply(`You have paid ${targetAccount.name} ${transferAmount} VC.`)
+            return await interaction.reply(`You have paid ${targetAccount.name} ${transferAmount} VC for reason: ${reason}.`)
         } else {
             return await interaction.reply("Something went wrong with payment.  Please ping your administrator.")
         }
